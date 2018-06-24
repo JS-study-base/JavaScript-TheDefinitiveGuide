@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>构造函数的重载和工厂方法</title>
+  <script>
+    //     有时候，我们希望对象的初始化有多种方式。
+    // 比如，我们想通过元素组成的数组来初始化一个Set对象，
+    // 而不是通过传入构造函数的参数来初始化它。
+    // 有一种方式可以实现，
+    // 通过重载（overload）这个构造函数
+    // 让它根据传入参数的不同来执行不同的初始化方法。
+    function Set() {
+      this.values = {};
+      this.n = 0;
+      if (arguments.length == 1 && isArrayLike(arguments[0])) {
+        this.add.apply(this, arguments[0]);
+      } else if (arguments.length > 0) {
+        this.add.apply(this, arguments);
+      }
+    }
+
+    function isArrayLike(o) {
+      if (o &&
+        typeof o === "object" &&
+        isFinite(o.length) &&
+        o.length === Math.floor(o.length) &&
+        o.length < Math.pow(2, 32)) {
+        return true;
+      }
+      return false;
+    }
+    // 上面的代码定义的构造函数可以显示地将
+    // 一组元素元素作为参数列表传入，
+    // 也可以传入元素组成的数组。
+    // 但这个构造函数有多义性，
+    // 如果想创建 只有一个成员且该成员是数组 的集合 就做不到。
+    // 只能首先创建一个空集合，然后调用add()方法
+
+    // *** 工厂方法
+    // 可以写一个工厂方法——
+    // 一个类的方法用以返回类的一个实例。
+    // 可以给工厂方法定义任意的名字，
+    // 不同名字的工厂方法用以执行不同的初始化
+    Set.fromArray = function (a) {
+      var s = new Set();
+      s.add.apply(s, a);
+      return s;
+    }
+
+    var s = Set.fromArray([1, 'a']);
+    s.toString();	// => "{1, a}"
+    s.size();	// => 2
+
+    // *** 多个构造函数
+    // 由于构造函数是类的公有标识，因此每个类只能有一个构造函数。
+    // 但这并不是一个“必须遵守”的规则。
+    // 在JavaScript中是可以定义多个构造函数继承自一个原型对象的，
+    // 如果这样做，由这些构造函数所创建的所有对象都属于同一类型。
+    // 但并不推荐这种技术
+    function SetFromArray(a) {
+      // 通过以函数的形式调用Set()来初始化这个新对象
+      Set.apply(this, a);
+    }
+    SetFromArray.prototype = Set.prototype;
+
+    var s = new SetFromArray([1, 'a']);
+    s.toString();   // => "{1, a}"
+    s.size();   // => 2
+    s instanceof Set;   // => true
+  </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

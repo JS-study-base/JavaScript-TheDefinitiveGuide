@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<script>
+  function quacks(o /* , ... */) {
+    for (var i = 1; i < arguments.length; i++) {
+      var arg = arguments[i];
+      switch (typeof arg) {
+        case "string": // string: 直接用名字做检查
+          if (typeof o[arg] !== "function") {
+            return false;
+          }
+          continue;
+        case "function": // function: 检查函数原型上的方法
+          arg = arg.prototype; // 进入下一个case
+        case "object":
+          for (var m in arg) { // 遍历对象的每个属性
+            if (typeof arg[m] !== "function") { // 过滤掉非方法
+              continue;
+            }
+            if (typeof o[m] !== "function") {
+              return false;
+            }
+          }
+      }
+    }
+    // 执行到这里，说明o实现了所有方法
+    return true;
+  }
+  var o = {
+    walk: walk,
+    swim: swim,
+    bike: bike
+  };
+  function walk() { };
+  function swim() { };
+  function bike() { };
+  quacks(o, walk, swim, bike);	// => true
+  quacks(o, "walk");	// => true
+  quacks(o, "walk2");	// => false
+</script>
+
+<body>
+
+</body>
+
+</html>

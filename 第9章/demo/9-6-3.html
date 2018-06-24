@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>比较方法</title>
+</head>
+<script>
+  function Range(from, to) {
+    this.from = from;
+    this.to = to;
+  }
+
+  Range.prototype.equals = function (that) {
+    if (this === that) {
+      return true;
+    }
+    if (that == null) { // null / undefined
+      return false;
+    }
+    if (that.constructor !== Range) {
+      return false;
+    }
+    // 当两个端点相等时，两个对象才相等
+    return this.from == that.from && this.to == that.to;
+  };
+  var r1 = new Range(1, 2);
+  var r2 = new Range(1, 3);
+  var r3 = new Range(1, 3);
+
+  r2 == r3; // => false
+  r2.equals(r3); // => true
+  r1 == r2; // => false
+  r1.equals(r2); // => false
+
+  Set.prototype.equals = function (that) {
+    if (this === that) {
+        return true;
+    }
+    if (!(that instanceof Set)) {
+        return false;
+    }
+    if (this.size() != that.size()) {
+        return false;
+    }
+    // 检查两个集合中的元素是否完全一样
+    try {
+        this.foreach(function (v) {
+            if (!that.contains(v)) { // 当有元素在that中不存在
+                throw false;    // 则跑异常终止foreach
+            }
+        });
+        return true;    
+    } catch (x) {
+        if (x === false) {
+            return false;
+        }
+        throw x;
+    }
+};
+</script>
+
+<body>
+
+</body>
+
+</html>

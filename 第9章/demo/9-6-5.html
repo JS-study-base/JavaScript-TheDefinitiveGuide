@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>私有状态</title>
+  <script>
+    // 示例中展示了对Range类的另一种封装
+    // 新版的类的实例包含 from()和to()方法 用以返回范围的端点
+    // 而不是用 from和to属性 来获取端点
+    // 获取端点的方式从 直接从属性读取 变成了 通过from()和to()来读取
+    function Range(from, to) {
+      this.from = function () { return from; };
+      this.to = function () { return to; };
+    }
+
+    // ---
+    var r1 = new Range(1, 2);
+
+    r1.from;    // => function () { return from; }
+    r1.from();  // => 1
+    // 新的Range类定义了用以读取范围端点的方法，
+    // 但没有定义设置端点的方法或属性。
+    // 这让类的实例看起来是不可修改的，但实际上是可以修改的，
+    // 除非使用ES5中的某些特性使其不能被修改。
+    // 通过方法替换来修改它
+    r1.from = function () { return 10; };
+    r1.from();  // => 10
+    // 使用闭包来封装类的状态的类 一定会比 不使用封装的状态变量的等价类 
+    // 运行速度更慢 且 占用更多内存。
+    // 需要注意的是，这种封装技术造成了更多系统开销。
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

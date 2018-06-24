@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>类的扩充</title>
+</head>
+<script>
+  //给所有的函数扩展方法
+  if (!Function.prototype.bind) {
+    Function.prototype.bind = function (o /* args */) {
+      // bind()
+    }
+  }
+
+  //给Number对象扩展方法
+  // 多次调用函数f, 传入一个迭代数context
+  Number.prototype.times = function (f, context) {
+    var n = Number(this);
+    for (var i = 0; i < n; i++) {
+      f.call(context, i);
+    }
+  };
+  var n = 3;
+  n.times(function (n) { console.log(n, "hello"); });
+  // => 
+  //0 "hello"
+  //1 "hello"
+  //2 "hello" 
+
+  //给String对象扩展方法
+  // 如果不存在ES5的String.trim()方法,
+  // 就定义自定义的方法去除字符串头尾的空格
+  String.prototype.trim = String.prototype.trim || function () {
+    if (!this) return this;  // 空串不做处理
+    return this.replace(/^\s|\s+$/g, "");
+  };
+
+  " abc ".trim();	// => "abc
+</script>
+
+<body>
+
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>标准转换方法</title>
+</head>
+<script>
+  function extend(o, p) {
+    for (prop in p) {
+      o[prop] = p[prop];
+    }
+    return o;
+  }
+  //将这些方法添加至Set类型的原型对象中
+  extend(Set.prototype, {
+    //将集合转换为字符串
+    toString: function () {
+      var s = "{",
+        i = 0;
+      this.forEach(function (v) { s += ((i++ > 0) ? "," : "") + v; });
+      return s + "}";
+    },
+    //类似toString,但是对于所有的值都将调用toLocaleString()
+    toLocaleString: function () {
+      var s = "{", i = 0;
+      this.forEach(function (v) {
+        if (i++ > 0) s += ",";
+        if (v == null) s += v; //null和undefined
+        else s += v.toLocaleString(); //其它情况
+      });
+      return s + "}";
+    },
+    //将集合转换为值数组
+    toArray: function () {
+      var a = [];
+      this.forEach(function (v) { a.push(v); });
+      return a;
+    }
+  });
+  //对于要从JSON转换为字符串的集合都当做数组来对待
+  Set.prototype.toJSON = Set.prototype.toArray;
+</script>
+
+<body>
+
+</body>
+
+</html>
