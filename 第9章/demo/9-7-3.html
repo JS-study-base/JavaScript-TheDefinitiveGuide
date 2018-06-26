@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>组合vs子类</title>
+  <script>
+    //这个例子中使用组合有一个好处：只需要创建一个单独的FilteredSet子类即可。
+    // 可以利用这个类的实例来创建任意带有成员限制的集合实例。
+    var FilteredSet = Set.extend(
+      // 构造函数
+      function FilteredSet(set, filter) {
+        this.set = set;
+        this.filter = filter;
+      },
+
+      // 实例方法
+      {
+        add: function () {
+          // 有过滤器则使用
+          if (this.filter) {
+            for (var i = 0; i < arguments.length; i++) {
+              var v = arguments[i];
+              if (!this.filter(v)) {
+                throw new Error("FilteredSet: value " + v + " rejected by filter");
+              }
+            }
+          }
+
+          // 调用set中的add()方法
+          this.set.add.apply(this.set, arguments);
+
+          return this;
+        },
+        remove: function () {
+          this.set.remove.apply(this.set, arguments);
+          return this;
+        },
+        contains: function (v) {
+          return this.set.contains(v);
+        },
+        size: function () {
+          return this.set.size();
+        },
+        foreach: function (f, c) {
+          this.set.foreach(f, c);
+        }
+      }
+    );
+
+    // NonNullSet
+    var s = new FilteredSet(new Set(), function (x) { return x != null; });
+
+  </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

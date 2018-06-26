@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>构造函数和方法链</title>
+</head>
+<script>
+    //NonNullSet
+    //定义的Set的子类NonNullSet，它不允许null和undefined作为它的成员。
+    // 为了使用这种方式对成员做限制，
+    // NonNullSet需要在其add()方法中对null和undefined值做检测。
+    //它不需要完全重新实现一个add()方法，因此它调用了父类中的这个方法。
+    // NonNullSet()构造函数同样不需要重新实现，
+    // 它只需要将它的参数传入父类构造函数
+    // （作为函数来调用它，而不是通过构造函数来调用），
+    // 通过父类的构造函数来初始化新创建的对象。
+    /**
+     * NonNullSet是Set的子类，它的成员不能是null和undefined
+     */
+    function NonNullSet() {
+        // 仅链接到父类
+        // 作为普通函数调用父类的构造函数，来初始化新对象
+        Set.apply(this, arguments);
+    }
+
+    // 将NonNullSet设置为Set的子类
+    NonNullSet.prototype = inherit(Set.prototype);
+    NonNullSet.prototype.constructor = NonNullSet;
+
+    // 重写将 null和undefined 排除在外的 add()方法
+    NonNullSet.prototype.add = function () {
+        
+        /* ---------过滤部分------- */
+        for (var i = 0; i < arguments.length; i++) {
+            if (arguments[i] == null) {
+                throw new Error("Can't add null or undefined to NonNullSet");
+            }
+        }
+        /* ----------------------- */
+
+        // 调用父类的add()方法执行实际的插入操作
+        return Set.prototype.add.apply(this, arguments);
+    };
+
+    var s = new NonNullSet(1, "a");
+    s.toArray();	// => [1, "a"]
+    s.add(null);
+    // => Uncaught Error: Can't add null or undefined to NonNullSet
+
+    // 让我们将这个非null集合的概念推而广之，称为“过滤后的集合”，
+    // 这个集合中的成员必须首先传入一个过滤函数再执行添加操作。
+    // 为此，定义一个类工厂函数：传入一个过滤函数，返回一个新的Set子类。
+    // 实际上，可以做进一步通用化的处理——
+    // 定义一个可接受两个参数的类工厂：子类 和 过滤函数
+    /**
+     * 这个函数返回具体Set类的子类
+     * 并重写该类的add()方法用以对添加的元素做特殊的过滤
+     */
+    function filteredSetSubclass(superclass, filter) {
+        // 子类构造函数
+        var subconstructor = function () {
+            superclass.apply(this, arguments); // 调用父类构造函数
+        };
+
+        var proto = subconstructor.prototype = inherit(superclass.prototype);
+        proto.constructor = subconstructor;
+        proto.add = function () {
+            // 添加成员之前，用过滤器将参数进行过滤
+            for (var i = 0; i < arguments.length; i++) {
+                var v = arguments[i];
+                if (!filter(v)) {
+                    throw ("value " + v + " rejected by filter");
+                }
+            }
+
+            // 调用父类的add()方法
+            superclass.prototype.add.apply(this, arguments);
+        };
+        return subconstructor;
+    }
+
+    // 只能保存字符串的集合类
+    var StringSet = filteredSetSubclass(Set, function (x) {
+        return typeof x === "string";
+    });
+
+    // 集合成员不能是：null、undefined、函数
+    var MySet = filteredSetSubclass(NonNullSet, function (x) {
+        return typeof x !== "function";
+    });
+
+    var s = new StringSet('a', 'b');
+    s.toArray();    // => ["a", "b"]
+    s.add(2);
+    // => Uncaught value 2 rejected by filter
+
+    // 重写NonNullSet
+    // 用一个函数将创建子类的代码包装起来，
+    // 这样就可以在构造函数和方法链中使用父类的属性，
+    // 而不是通过写死某个父类的名字来使用它的属性。
+    var NonNullSet = (function () { // 定义并立即调用这个函数
+        var superclass = Set;   // 仅指定父类
+        return superclass.extend(
+            function () {   // 构造函数 
+                superclass.apply(this, arguments);
+            },
+            {   // 方法
+                add: function () {
+                    // 过滤
+                    for (var i = 0; i < arguments.length; i++) {
+                        if (arguments[i] == null) {
+                            throw new Error("Can't add null or undefined");
+                        }
+                    }
+
+                    // 调用父类的add()方法，完成实际插入操作
+                    return superclass.prototype.add.apply(this, arguments);
+                }
+            }
+        );
+    })();
+</script>
+<body>
+    
+</body>
+</html>

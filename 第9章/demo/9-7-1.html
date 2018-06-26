@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>defineSubClass</title>
+</head>
+<script>
+  function extend(o, p) {
+    for (prop in p) {
+      o[prop] = p[prop];
+    }
+    return o;
+  }
+  function inherit(p) {
+    if (p == null) throw TypeError();
+    if (Object.create) return Object.create(p);
+    var t = typeof p;
+    if (t !== "object" && t !== "function") throw TypeError();
+    function f() { };
+    f.prototype = p;
+    return new f();
+  }
+  /**
+  * 定义子类
+  */
+  function defineSubClass(superclass,     // 父类的构造器
+    constructor,    // 新的子类的构造函数
+    methods,        // 实例方法：复制至原型中
+    statics)        // 类属性：复制至构造函数中
+  {
+    // 建立子类的原型
+    constructor.prototype = inherit(superclass.prototype);
+    constructor.prototype.constructor = constructor;
+
+    // 复制方法
+    if (methods) extend(constructor.prototype, methods);
+    // 复制类属性
+    if (statics) extend(constructor, statics);
+
+    return constructor;
+  }
+
+  function Person() { };
+  Person.prototype.desc = function () { return "I'm a person."; };
+  function Student() { };
+  defineSubClass(Person,
+    Student,
+    { job: "study" },
+    { desc: function () { return "I'm a person."; } });
+  (new Student());
+
+  // =>
+  // Student { constructor: function, job: "study", desc: function}
+  //   __proto__: Student
+  //     constructor: function Student() { }
+  //     job: "study"
+  //     __proto__: Person
+  //     constructor: function Person() { }
+  //     desc: function () { return "I'm a person."; }
+  //     __proto__: Object
+
+  function SingletonSet(member) {
+    this.member = member;   // 集合中的唯一成员
+  }
+  SingletonSet.prototype = inherit(Set.prototype);    // 继承自Set的原型
+
+  // 给原型添加属性，覆盖Set.prototype中同名的属性
+  extend(SingletonSet.prototype, {
+    constructor: SingletonSet,  // 合适的constructor属性
+    add: function () { throw "read-only set"; },
+    remove: function () { throw "read-only set"; },
+    size: function () { return 1; },
+    foreach: function (f, context) { f.call(context, this.member); },
+    contains: function (x) { return x === this.member; }
+  });
+
+
+  // 示例中的SingletonSet类包含5个简单的方法定义。
+  // 它实现了5个核心的Set方法（add(), remove(),size(),foreach(),contains()），
+  // 它继承了父类（Set）中的方法（toString(), toArray(), equals()）。
+  // 定义子类就是为了继承方法。比如，Set类的equals()方法，
+  // 因为SingletonSet是Set的子类，所以它自动继承了equals()的实现，不用再实现一次。
+  // 注意，SingletonSet不是将Set中的方法列表静态地借用过来，
+  // 而是动态地从Set类继承方法。
+  // 如果给Set.prototype添加新的方法，
+  // Set和SingletonSet的所有实例就会立即拥有这个方法。
+
+  function Set() { }
+  function SingletonSet() { }
+
+  SingletonSet.prototype = Object.create(Set.prototype);
+  SingletonSet.prototype.constructor = SingletonSet;
+
+  var s = new SingletonSet();
+  s; // =>
+  // SingletonSet {constructor: function}
+  //     __proto__: SingletonSet
+  //         constructor: function SingletonSet() {}
+  //         __proto__: Set
+  //             constructor: function Set() {}
+  //             __proto__: Object
+
+  // 添加新的方法
+  Set.prototype.equals = function () { return "equals() from Set" };
+  s; // =>
+    // SingletonSet {constructor: function, equals: function}
+    //     __proto__: SingletonSet
+    //         constructor: function SingletonSet() {}
+    //         __proto__: Set
+    //             constructor: function Set() {}
+    //             equals: function () { return "equals() from Set" }
+    //             __proto__: Object
+</script>
+
+<body>
+
+</body>
+
+</html>

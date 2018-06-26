@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>定义子类</title>
+</head>
+<script>
+    // B.prototype = Object.create(A.prototype); // 子类（B）派生自父类（A）
+    // B.prototype.constructor = B; // 重载继承来的constructor属性
+    //上面这两行代码是在JavaScript中创建子类的关键。
+    // 如果不这样做，原型对象仅仅是一个普通对象，它只继承自Object.prototype，
+    // 这意味着你的类和所有的类一样是Object的子类。
+    function A() { };
+    function B() { };
+
+    A.prototype.a = function () { return "from A" };
+    B.prototype.b = function () { return "from B" };
+
+    var o = new B();
+
+    o; // =>
+    // B {b: function}
+    //     __proto__: B
+    //         b: function () { return "from B" }
+    //         constructor: function B() {}
+    //         __proto__: Object
+
+    B.prototype = Object.create(A.prototype);
+    o = new B(); 
+    o; // => 
+    // B {a: function}
+    // __proto__: Object
+    //     __proto__: A
+    //         a: function () { return "from A" }
+    //         constructor: function A() {}
+    //         __proto__: Object
+
+    B.prototype.constructor = B;
+    o = new B(); 
+    o; // => 
+    // B {constructor: function, a: function}
+    //     __proto__: B
+    //     constructor: function B() {}
+    //         __proto__: A
+    //             a: function () { return "from A" }
+    //             constructor: function A() {}
+    //             __proto__: Object
+
+    B.prototype.b = function () { return "from B" };
+    o = new B(); 
+    o; // => 
+    // B {constructor: function, b: function, a: function}
+    //     __proto__: B
+    //         b: function () { return "from B" }
+    //         constructor: function B() {}
+    //         __proto__: A
+    //             a: function () { return "from A" }
+    //             constructor: function A() {}
+    //             __proto__: Object
+</script>
+
+<body>
+
+</body>
+
+</html>

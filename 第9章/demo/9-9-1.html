@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>作为私有命名空间的函数</title>
+  <script>
+    /**
+     * 导出公有API
+     * 模块函数返回构造函数，
+     * 这个构造函数随后赋值给一个全局变量。
+    */
+    var Set = (function invocation() {
+
+      function Set() {
+        this.values = {};
+        this.n = 0;
+        this.add.apply(this, arguments);
+      }
+      Set.prototype.add = function (v) { /* ... */ }
+      Set.prototype.contains = function (value) {
+        return this.values.hasOwnProperty(v2s(value));
+      }
+
+      // 辅助函数
+      function v2s(val) { /* ... */ }
+      function objectId(o) { /* ... */ }
+      var nextId = 1;
+
+      // 将 公有API--Set()构造函数 导出
+      return Set;
+
+    }());
+
+    //导出命名空间对象
+    //当模块API包含多个单元，则它可以返回命名空间对象
+    var collections;
+    if (!collections) collections = {};
+
+    collections.sets = (function namespace() {
+      // ... 多个“集合类” ...
+      return {
+        AbstractSet: AbstractSet,
+        NotSet: NotSet,
+        SingletonSet: SingletonSet,
+        AbstractWritableSet: AbstractWritableSet,
+        ArraySet: ArraySet
+      };
+    });
+
+    // 将模块函数当做构造函数
+    // 通过new来调用，
+    // 通过将它们赋值给this来将其导出
+    var collections;
+    if (!collections) collections = {};
+
+    collections.sets = (new function namespace() {
+      // ... 多个“集合类” ...
+      this.AbstractSet = AbstractSet;
+      this.NotSet = NotSet;
+      this.SingletonSet = SingletonSet;
+      this.AbstractWritableSet = AbstractWritableSet;
+      this.ArraySet = ArraySet;
+    });
+    
+    // 给全局命名空间对象赋值
+    // 如果已经定义了全局命名空间对象，
+    // 这个模块函数可以直接设置那个对象的属性，
+    // 不用返回任何内容
+    var collections;
+    if (!collections) collections = {};
+    (function namespace() {
+      // ... 多个“集合类” ...
+      collections.sets.AbstractSet = AbstractSet;
+      collections.sets.NotSet = NotSet;
+    }());
+  </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
