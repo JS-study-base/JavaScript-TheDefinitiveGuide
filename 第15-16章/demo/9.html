@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>onchanges( HTML事件属性 )onchange 在元素值改变时触发</title>
+    <script>
+        // onchange 属性适用于：input、textarea 以及 select元素
+        function checkField(val) {
+            alert("输入值已更改。新值是：" + val);
+        }
+    </script>
+</head>
+
+<body>
+    <p>请修改输入字段中的文本，然后在字段外点击以触发 onchange。</p>
+
+    请输入文本：
+    <input type="text" name="txt" value="Hello" onchange="checkField(this.value)">
+
+</body>
+
+</html>
+
+
+<!-- <html>
+<title>onclick( Event 对象 )onclick 事件会在对象被点击时发生</title>
+<body>
+    Field1:
+    <input type="text" id="field1" value="Hello World!">
+    <br /> Field2:
+    <input type="text" id="field2">
+    <br />
+    <br /> Click the button below to copy the content of Field1 to Field2.
+    <br />
+    <button onclick="document.getElementById('field2').value=
+document.getElementById('field1').value">Copy Text</button>
+</body>
+<script>
+//  支持该事件的 JavaScript 对象：button, document, checkbox, link, radio, reset, submit
+</script>
+</html> -->
+
+
+<!-- <html>
+<title>onblur（ HTML事件属性 ）onblur 事件会在对象失去焦点时发生</title>
+<head>
+    <script type="text/javascript">
+//     支持该事件的 JavaScript 对象： 
+//             button, checkbox, fileUpload, layer, frame, password, radio, reset, submit, text, textarea, window
+        function upperCase() {
+            var x = document.getElementById("fname").value
+            document.getElementById("fname").value = x.toUpperCase()
+        }
+    </script>
+</head>
+<body>
+    Enter your name:
+    <input type="text" id="fname" onblur="upperCase()">
+    <br /> Enter your age:
+    <input type="text" id="age" onblur="alert(this.id)">
+</body>
+</html> -->

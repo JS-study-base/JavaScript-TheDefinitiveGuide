@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="jquery.js"></script>
+    <style>
+        .btn {
+            width: 30%;
+            font-size: 30px;
+            background-color: rgba(136, 255, 0, 0.267)
+        }
+
+        .btn:after {
+            display: block;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(136, 255, 0, 0.267);
+            content: ".";
+        }
+        /* var s = window.getComputedStyle( query, ":after" ); */
+    </style>
+</head>
+
+<body>
+    <div class="btn"  id="con" style="width: 30%">我是文字</div>
+    <script>
+        var box = document.getElementById("con");
+        box.style.height = "1000px";
+
+        // 获取标签浏览器计算后的样式
+        console.log(window.getComputedStyle(box, null).getPropertyValue("height"));
+        console.log(window.getComputedStyle(box, null).getPropertyValue("width"));
+        // 获取伪元素浏览器计算后的样式
+        console.log(window.getComputedStyle(box, "after")["content"]);
+        console.log(window.getComputedStyle(box, "after")["background-color"]);
+        // 注意：getComputedStyle(box, null).getPropertyValue("height")等价于getComputedStyle(box, null)["height"]
+
+        function scale(e, factor) {
+            var size = parseInt(window.getComputedStyle(e, "").fontSize);
+            e.style.fontSize = factor * size + "px";
+            console.log(e.style.fontSize)
+        }
+
+        function scaleColor(e, factor) {
+            var bgColor = window.getComputedStyle(e, "").backgroundColor;
+            console.log(bgColor)
+
+            // rgb(22, 33, 44)，rgba(22, 33, 44, 0.2)
+            var components = bgColor.match(/[\d\.]+/g);
+            console.log(components)
+
+            for (var i = 0; i < 3; i++) { // 循环 r、g、b
+                var x = Number(components[i]) * factor;   // 缩放 r g b
+                x = Math.round(Math.min(Math.max(x, 0), 255)); // 设置边界并取整
+                components[i] = String(x);
+            }
+
+            if (components.length == 3) {
+                e.style.backgroundColor = "rgb(" + components.join(",") + ")";
+            } else if (components.length == 4) {
+                e.style.backgroundColor = "rgba(" + components.join(",") + ")";
+            }
+
+        }
+
+        function classList(e) {
+            if (e.classList) {
+                return e.classList;
+            }
+            return new CSSClassList(e);
+        }
+
+        function CSSClassList(e) {
+            this.e = e;
+        }
+
+        CSSClassList.prototype.contains = function (className) {
+            // 检查 className 的合法性
+            if (className.length === 0 || className.indexOf(" ") != -1) {
+                throw new Error("Invalid class name: '" + className + "'");
+            }
+
+            var classes = this.e.className;
+
+            if (!classes) { // 不含类名
+                return false;
+            }
+
+            if (classes === className) { // e仅有一个类，且匹配
+                return true;
+            }
+
+            // 使用正则搜索 className
+            return classes.search("\\b" + className + "\\b") != -1;
+        }
+
+        CSSClassList.prototype.add = function (className) {
+            if (this.contains(className)) return this;
+            var classes = this.e.className;
+            if (classes && classes[classes.length - 1] != " ") {
+                className = " " + className;
+            }
+            this.e.className += className;
+            return this;
+        };
+
+        CSSClassList.prototype.remove = function (className) {
+
+            if (className.length === 0 || className.indexOf(" ") != -1) {
+                throw new Error("Invalid class name: '" + className + "'");
+            }
+
+            var pattern = new RegExp("\\b" + className + "\\b\\s*", "g");
+            this.e.className = this.e.className.replace(pattern, "");
+
+            return this;
+        };
+
+        CSSClassList.prototype.toggle = function (className) {
+            if (this.contains(className)) {
+                this.remove(className);
+                return this;
+            }
+            this.add(className);
+            return this;
+        };
+
+        CSSClassList.prototype.toString = function () {
+            return this.e.className;
+        };
+
+        CSSClassList.prototype.toArray = function () {
+            return this.e.className.match(/\b\w+\b/) || [];
+        };
+
+
+
+
+    </script>
+</body>
+
+</html>

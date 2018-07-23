@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+            .page { width: 2000px; height:600px; border: solid 1px red; 
+            background-color: }
+    </style>
+</head>
+
+<body>
+
+    <!-- <div style="height: 1000px;">
+        ssss
+    </div> -->
+
+    <!-- <div id="board"
+     style="width: 100px; height: 30px;
+            margin-top: 1000px;
+            border: solid 1px gray;">
+    hello
+    </div> -->
+
+
+    <div class="page">1</div>
+    <div class="page">2</div>
+    <div class="page">3</div>
+    <div class="page">4</div>
+
+    <script>
+        /**
+        * 返回指定窗口的滚动条偏移量，默认为当前窗口
+        * @param w
+        * @returns {*}
+        */
+        // function getScrollOffsets(w) {
+        //     // 使用指定的窗口，否则使用当前窗口
+        //     w = w || window;
+
+        //     // 所有浏览器（除了IE8及其早期版本）
+        //     if (w.pageXOffset != null) {
+        //         return {
+        //             x: w.pageXOffset,
+        //             y: w.pageYOffset
+        //         };
+        //     }
+
+        //     // IE（标准模式）
+        //     var d = w.document;
+        //     if (d.compatMode == "CSS1Compat") {
+        //         return {
+        //             x: d.documentElement.scrollLeft,
+        //             y: d.documentElement.scrollTop
+        //         };
+        //     }
+
+        //     // IE（怪异模式）
+        //     return {
+        //         x: d.body.scrollLeft,
+        //         y: d.body.scrollTop
+        //     }
+        // }
+
+        // getScrollOffsets()
+
+        /**
+            *  返回视口的尺寸
+            * @param w
+            * @returns {*}
+            */
+            // function getViewPortSize(w) {
+
+            // w = w || window;
+
+            // // 所有浏览器（除了IE8及其早期版本）
+            // if (w.innerWidth != null) {
+            //     return {
+            //         w: w.innerWidth,
+            //         h: w.innerHeight
+            //     };
+            // }
+
+            // // IE（标准模式）
+            // var d = w.document;
+            // if (d.compatMode == "CSS1Compat") {
+            //     return {
+            //         w: d.documentElement.clientWidth,
+            //         h: d.documentElement.clientHeight
+            //     };
+            // }
+
+            // // IE（怪异模式）
+            // return {
+            //     w: d.body.clientWidth,
+            //     h: d.body.clientHeight
+            // };
+            // }
+
+
+            // 15.8.2 查询元素的几何尺寸
+            // var box = board.getBoundingClientRect();    // 获得视口坐标
+            // var offsets = getScrollOffsets();           // 调用工具函数（上节）
+
+            // // 转化为文档坐标
+            // var x = box.left + offsets.x;   // => 8
+            // var y = box.top + offsets.y;    // => 1000
+
+            // 获取宽高
+            // var w = box.width || (box.right - box.left);    // => 102
+            // var h = box.height|| (box.bottom - box.top);    // => 32
+
+            // console.log(x,y)
+            // console.log(w,h)
+
+            function nextPage() {
+                var documentHeight = document.documentElement.offsetHeight;
+                var viewPortHeight = window.innerHeight;
+                window.scrollTo(0, viewPortHeight * nextPage.next++);
+            }
+            nextPage.next = 1;
+
+            function lastPage() {
+                var documentHeight = document.documentElement.offsetHeight;
+                var viewPortHeight = window.innerHeight;
+                window.scrollTo(0, documentHeight - viewPortHeight);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>

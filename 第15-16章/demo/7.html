@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <form name="shipping">
+        <fieldset>
+            <legend>Shipping Method</legend>
+            <label>
+                <input type="radio" name="method" value="1st" />First-class</label>
+            <label>
+                <input type="radio" name="method" value="2day" />2-day Air</label>
+            <label>
+                <input type="radio" name="method" value="overnight" />Overnight</label>
+        </fieldset>
+    </form>
+
+    <script>
+        var methods = document.forms.shipping.elements.method;
+        console.log(methods);
+        var shipping_method;
+        for (var i = 0; i < methods.length; i++) {
+            if (methods[i].checked) {
+                shipping_method = methods[i].value;
+                 break;
+            }
+        }
+        
+        
+    </script>
+</body>
+
+</html>

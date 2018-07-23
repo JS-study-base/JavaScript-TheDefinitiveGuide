@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .first ,.second {
+            margin-top: 5px;
+            width: 200px;
+            height: 100px;
+            background: #ff8436;
+        }
+
+        .third {
+            margin-top: 5px;
+            width: 200px;
+            height: 100px;
+            background: #7CF45C;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="first"></div>
+   
+    <script>
+        var cssrules = document.styleSheets[0].cssRules;
+        var rules = document.styleSheets[0].rules;
+        //测试长度
+        console.log("cssRules: " + cssrules.length);
+        console.log("rules: " + rules.length);
+        //在IE下的答案是cssRules:2   rules:3
+        //直接看答案吧！
+        var resultCssrules = "resultCssrules: ";
+        var resultrules = "resultrules: ";
+        for (var i = 0; i < cssrules.length; i++) {
+            resultCssrules += (i + 1) + "#" + cssrules[i].selectorText + "\n";
+        }
+        for (i = 0; i < rules.length; i++) {
+            resultrules += (i + 1) + "#" + rules[i].selectorText + "\n";
+        }
+        console.log(resultCssrules);
+        console.log(resultrules);
+
+        var ss = document.styleSheets[0];
+        var rules = ss.cssRules || ss.rules;
+        for (var i = 0; i < rules.length; i++) {
+            var rule = rules[i];
+            if (!rule.selectorText) { // 跳过 @import 和 非样式规则
+                continue;
+            }
+            var selector = rule.selectorText;
+            var ruleText = rule.style.cssText;
+
+            // 将 h1 的规则应用到 h2
+            if (selector == "h1") {
+                if (ss.insertRule) {
+                    ss.insertRule("h2 { " + ruleText + " }", rules.length);
+                } else if (ss.addRule) {
+                    ss.addRule("h2", ruleText, rules.length);
+                }
+            }
+
+            // 如果规则设置了text-decoration 属性，则将其删除
+            if (rule.style.textDecoration) {
+                if (ss.deleteRule) {
+                    ss.deleteRule(i);
+                } else if (ss.removeRule) {
+                    ss.removeRule(i)
+                }
+                i--;
+            }
+        }
+
+        function addStyles(styles) {
+            var styleElt, styleSheet;
+            if (document.createStyleSheet) { // 如果是IE
+                styleSheet = document.createStyleSheet();
+            } else {
+                var head = document.getElementsByTagName("head")[0];
+                styleElt = document.createElement("style");;
+                head.appendChild(styleElt); // 将其插入<head>
+                // 获取刚添加的样式表
+                styleSheet = document.styleSheets[document.styleSheets.length - 1];
+            }
+
+            if (typeof styles === "string") {
+                if (styleElt) {
+                    styleElt.innerHTML = styles;
+                } else {
+                    styleSheet.cssText = styles;
+                }
+            } else { // 如果是对象
+                var i = 0;
+                for (var selector in styles) {
+                    if (styleSheet.insertRule) {
+                        var rule = selector + " { " + styles[selector] + " } "
+                        styleSheet.insertRule(rule, i++)
+                    } else {
+                        styleSheet.addRule(selector, styles[selector], i++);
+                    }
+                }
+            }
+
+        }
+
+addStyles("h1 {color: red;}");
+addStyles({"h1":"color: blue"});
+
+        document.styleSheets.ss.insertRule("body { background-color: green;}", 5);
+    </script>
+</body>
+
+</html>

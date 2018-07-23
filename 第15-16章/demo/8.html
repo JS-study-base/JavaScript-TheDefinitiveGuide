@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+        <title>表单事件实例</title>
+
+        <!-- onblur :当元素失去焦点时触发事件
+        onchange :当元素改变时触发事件
+        oncontextmenu :当触发上下菜单时触发事件
+        onfous:单元素获得焦点时触发事件
+        onformchange :当标的改变时触发该事件
+        onforminput：当表单获得用户输入时触发事件
+        oninput :当元素获得用户输入时触发事件
+        oninvalid: 当元素无效时触发事件
+        onselect :当选取元素时触发事件
+        onsubmit 当提交表当时触发事件 -->
+
+
+        <!-- 当输入框text1获取焦点时，选中其中的文本，
+        输入框text1的颜色变为黑色：当光标离开输入框text1时，
+        如果它的内容为空，则修改其值为“选择城市”，字体颜色为灰色。
+        但从下拉列表选择不同的城市时，在文本中显示选中的城市，并将字体颜色变为黑色。 -->
+		<script type="text/javascript">
+			function p1(obj){
+				obj.select();
+				obj.style.color="#000";
+			}
+			function p2(obj){
+				if(obj.value==""){
+					obj.value=="请选择城市"
+					obj.style.color="#999";
+				}
+			}
+			function p3(obj){
+			document.getElementById('text1').value=obj.value
+			document.getElementById('text1').style.color="#000";
+			}
+            
+		</script>
+	</head>
+	<body>
+		<input type="text" id="text1" onfous="p1(this)" value="选择城市" style="color:#999" onblur="p2(this)">
+		<select type="select" name=s1 onchange="p3(this)">
+			<option selected value="北京">北京</option>
+			<option value="上海">上海</option>
+			<option value="福建">福建</option>
+        </select><br><br>
+
+
+        <input type="checkbox" name="myCheck"  />
+        <input type="checkbox" name="myCheck"  />
+        <input type="checkbox" name="myCheck"  />
+        <input type="checkbox" name="myCheck"  />
+
+        <input type="button" onclick="check()" value="选定复选框" />
+        <input type="button" onclick="uncheck()" value="取消选定复选框" />
+
+
+    </body>
+    <script>
+        // var mycj = document.getElementById("myCheck").defaultChecked;
+        // console.log(mycj)
+
+        function check() {
+            var arr = document.getElementsByName("myCheck");
+            for (var i in arr){
+                arr[i].checked = true
+            }
+        }
+        function uncheck() {
+            var arr = document.getElementsByName("myCheck");
+             for (var i in arr){
+                arr[i].checked = false
+            }
+        }
+    </script>
+</html>

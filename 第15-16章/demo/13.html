@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>16.6.1开启关闭样式表</title>
+    <style>
+
+        #hello {
+            background-color: rgb(72, 255, 0);
+        }
+       
+    </style>
+    <style>
+        #ss {
+                background-color: red;
+            }
+    </style>
+</head>
+
+<body>
+    <div id="hello">你好</div>
+    <div id="ss">ss</div>
+</body>
+<script type="text/javascript">
+    // disableStylesheet是用来关闭link[rel=stylesheet]的效果的
+    function disableStylesheet(ss) {
+        // body... 
+        if (typeof ss === "number")
+            document.styleSheets[ss].disabled = true;
+        else {
+            var sheets = document.querySelectorAll(ss);
+            console.log(sheets)
+            for (var i = 0; i < sheets.length; i++)
+                sheets[i].disabled = true;
+        }
+    }
+    
+    // disableStylesheet(0)
+    disableStylesheet("hello")
+</script>
+
+</html>

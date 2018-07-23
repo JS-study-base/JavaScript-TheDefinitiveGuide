@@ -1,0 +1,50 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>操作样式表</title>
+    <link rel="stylesheet" type="text/css" href="theme.css" />
+    <style type="text/css">
+        #ul1 {
+            height: 3em;
+            background-color: pink;
+        }
+    </style>
+</head>
+
+<body>
+    <p id="p1">onq two</p>
+    <h1>操作样式表</h1>
+    <ul id="ul1">
+        <li>one</li>
+        <li>two</li>
+    </ul>
+    <input type="button" value="replace" onclick="test();" id="replace" />
+    <script type="text/javascript">
+        function test() {
+            //第一种取得外部样式表的方法
+            var link1 = document.styleSheets[0];
+
+            //第二种取得外部样式表的方法
+            var a = document.getElementsByTagName("link")[0];
+            var link2 = a.sheet || a.styleSheet;
+            //两种方法结果的对比
+            alert(link1 == link2);//true
+
+            //取得外部样式表中的CSS代码
+            var rules = link1.cssRules || link1.rules;
+
+            //试图输出全部的样式规则
+            alert(rules.cssText);//undefined
+
+            //取得外部样式表中的第一条样式规则
+            var rule = rules[0];
+            //输出第一条样式规则
+            alert(rule.cssText);
+
+        }
+//将test()函数绑定到replace按钮的onclick事件上 
+    </script>
+</body>
+
+</html>
